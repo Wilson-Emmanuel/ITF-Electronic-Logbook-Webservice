@@ -1,6 +1,6 @@
 package com.softwarelab.softwarelabelectroniclogbookwebservice.web.security;
 
-import javafx.util.Pair;
+import com.softwarelab.softwarelabelectroniclogbookwebservice.web.security.handlers.KeyToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,8 +39,8 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
             String token = optionalToken.get().trim().substring(7).trim();//removes "bearer "
             String clientRequestKey = optionalRequestKey.get().trim();
 
-            Pair<String,String> clienKeyTokenPair = new Pair<>(clientRequestKey,token);
-            Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(authenticationDetailsSource.buildDetails(httpServletRequest), clienKeyTokenPair);
+            KeyToken keyToken = KeyToken.builder().key(clientRequestKey).token(token).build();
+            Authentication requestAuthentication = new UsernamePasswordAuthenticationToken(authenticationDetailsSource.buildDetails(httpServletRequest), keyToken);
             return getAuthenticationManager().authenticate(requestAuthentication);
     }
 

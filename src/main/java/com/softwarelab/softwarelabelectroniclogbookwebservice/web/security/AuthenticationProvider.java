@@ -4,6 +4,7 @@ import com.softwarelab.softwarelabelectroniclogbookwebservice.services.models.dt
 import com.softwarelab.softwarelabelectroniclogbookwebservice.services.usecase.LoginService;
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.properties.ApplicationProperty;
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.security.handlers.AuthenticatedUser;
+import com.softwarelab.softwarelabelectroniclogbookwebservice.web.security.handlers.KeyToken;
 import javafx.util.Pair;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,9 +34,10 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
     @Override
     protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken authenticationToken) throws AuthenticationException {
-        Pair<String,String> clientKeyTokenPair = (Pair<String, String>) authenticationToken.getCredentials();
-        String token = clientKeyTokenPair.getValue();
-        String clientKey = clientKeyTokenPair.getKey();
+        KeyToken keyToken = (KeyToken) authenticationToken.getCredentials();
+
+        String token = keyToken.getToken();
+        String clientKey = keyToken.getKey();
 
         if(!clientKey.equals(applicationProperty.getApiRestKey())){
             throw new BadCredentialsException("Invalid API key.");

@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public abstract class AbstractBaseEntity<T extends Serializable> {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(unique = true)
     private  T id;
 

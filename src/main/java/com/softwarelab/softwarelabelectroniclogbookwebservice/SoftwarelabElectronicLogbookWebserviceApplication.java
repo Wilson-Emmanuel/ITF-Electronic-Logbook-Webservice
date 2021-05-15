@@ -13,7 +13,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -52,15 +56,16 @@ private ITFAdminService adminService;
                 .build();
         adminService.saveITFAdmin(request);
     }
+
     private void createStates(){
         if(stateRepository.count() != 38)
             stateRepository.deleteAll();
         else return;
-
         try {
-            File file = new ClassPathResource("states.txt").getFile();
-            List<String> files =Files.readAllLines(Paths.get(file.toURI()))
-                    .stream().map(fl -> {
+            InputStream resource = getClass().getClassLoader().getResourceAsStream("states.txt");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource));
+            List<String> files =bufferedReader.lines()
+                    .map(fl -> {
                         String[] fs = fl.split("'");
                         return fs[1];
                     }).collect(Collectors.toList());
