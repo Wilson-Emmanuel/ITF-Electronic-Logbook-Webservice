@@ -75,7 +75,7 @@ public PagedData<SchoolResponse> getSchools(SchoolQueryRequest schoolQueryReques
             schoolEntityPage.getTotalPages());
 }
     private Page<SchoolEntity> getSchools(SchoolDTO schoolDTO, int page, int size) {
-        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page,size, Sort.by("name").ascending());
         Specification<SchoolEntity> specification = withActiveStatus(RecordStatusConstant.ACTIVE);
         if(StringUtils.isNotBlank(schoolDTO.getSchoolName())){
             specification = specification.and(withName(schoolDTO.getSchoolName()));

@@ -70,7 +70,7 @@ public class StudentController {
     }
 
    @ApiOperation(value = "Update Student Password", notes = "")
-    @PutMapping(value = "/change-password/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "change-password/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<StudentResponse>> updateStudentPassword(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
                                                                             @RequestBody @Valid UpdatePassword updatePassword){
 
@@ -80,7 +80,7 @@ public class StudentController {
     }
 
     @ApiOperation(value = "Update Student Bank Account Details", notes = "")
-    @PutMapping(value = "/update-bank/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "update-bank/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<BankDetails>> updateStudentBankDetails(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
                                                                                  @RequestBody @Valid BankUpdateJSON updateJSON){
 
@@ -90,7 +90,7 @@ public class StudentController {
     }
 
     @ApiOperation(value = "Update/Fill daily task/logbook", notes = "")
-    @PutMapping(value = "/fill-logbook/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "fill-logbook/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<StudentResponse>> updateTask(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
                                                                                  @RequestBody @Valid DailyTaskUpdateJSON updateJSON){
 

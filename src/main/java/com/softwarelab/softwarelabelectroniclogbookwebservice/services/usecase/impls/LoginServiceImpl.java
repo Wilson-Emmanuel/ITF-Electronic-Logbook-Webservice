@@ -61,7 +61,9 @@ public class LoginServiceImpl implements LoginService {
         //save new login details
         String token = saveAuthUser(email,userAuthDTO.get().getUserType());
         return LoginToken.builder()
+                .userType(userAuthDTO.get().getUserType())
                 .token(token)
+                .userId(userAuthDTO.get().getUserId())
                 .build();
     }
 

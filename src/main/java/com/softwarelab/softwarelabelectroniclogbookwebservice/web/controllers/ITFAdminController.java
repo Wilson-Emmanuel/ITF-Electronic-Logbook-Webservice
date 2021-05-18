@@ -66,7 +66,7 @@ public class ITFAdminController {
     }
 
    @ApiOperation(value = "Update Admin Password", notes = "")
-    @PutMapping(value = "/change-password/{adminId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "change-password/{adminId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<ITFAdminResponse>> updateITFAdminPassword(@PathVariable("adminId") @Valid @Min(value = 1) Integer adminId,
                                                                             @RequestBody @Valid UpdatePassword updatePassword){
 
@@ -76,7 +76,7 @@ public class ITFAdminController {
     }
 
     @ApiOperation(value = "Mark student as paid", notes = "")
-    @PutMapping(value = "/pay-student/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "pay-student/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> payStudent(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId){
 
         studentService.payStudent(studentId);
@@ -85,7 +85,7 @@ public class ITFAdminController {
     }
 
     @ApiOperation(value = "Sign student logbook", notes = "")
-    @PutMapping(value = "/sign-logbook/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "sign-logbook/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> signStudentLogbook(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId){
 
         studentService.signLogBook(studentId);

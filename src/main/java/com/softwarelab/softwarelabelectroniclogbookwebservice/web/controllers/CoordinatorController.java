@@ -72,7 +72,7 @@ public class CoordinatorController {
 
     //@Secured({"COORDINATOR","ITF"})
     @ApiOperation(value = "Update Coordinator Password", notes = "")
-    @PutMapping(value = "/change-password/{coordinatorId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "change-password/{coordinatorId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<CoordinatorResponse>> updateCoordinatorPassword(@PathVariable("coordinatorId") @Valid @Min(value = 1) Long coordinatorId,
                                                                             @RequestBody @Valid UpdatePassword updatePassword){
 
@@ -83,7 +83,7 @@ public class CoordinatorController {
 
     //@Secured("COORDINATOR")
     @ApiOperation(value = "Update Student remark", notes = "")
-    @PutMapping(value = "/update-remark/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "update-remark/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> updateStudentRemark(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
                                                                        @RequestBody @Valid CoordinatorRemarkUpdateJSON updateJSON){
 

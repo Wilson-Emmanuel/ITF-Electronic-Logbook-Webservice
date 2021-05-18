@@ -13,4 +13,5 @@ public class UserAuthDTO {
     private String email;
     private String hashedPassword;
     private String userType;
+    private String userId;
 }

@@ -13,4 +13,10 @@ import lombok.Data;
 public class LoginToken {
     @JsonProperty(value = "token")
     private String token;
+
+    @JsonProperty(value = "user_type")
+    private String userType;
+
+    @JsonProperty(value = "user_id")
+    private String userId;
 }
