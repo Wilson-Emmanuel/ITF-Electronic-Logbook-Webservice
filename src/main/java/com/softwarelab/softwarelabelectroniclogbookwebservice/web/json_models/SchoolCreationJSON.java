@@ -23,7 +23,7 @@ public class SchoolCreationJSON {
     private String schoolName;
 
     @ApiModelProperty(notes = "school's State name. Expected format: String: valid state name in the system", required = true)
-    @JsonProperty(value = "stateName")
+    @JsonProperty(value = "state_name")
     @NotEmpty
     @NotNull
     private String stateName;

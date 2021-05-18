@@ -71,7 +71,7 @@ public class ManagerController {
     }
 
     @ApiOperation(value = "Update Manager Password", notes = "")
-    @PutMapping(value = "/change-password/{managerId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "change-password/{managerId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<ManagerResponse>> updateManagerPassword(@PathVariable("managerId") @Valid @Min(value = 1) Long managerId,
                                                                             @RequestBody @Valid UpdatePassword updatePassword){
 
@@ -81,7 +81,7 @@ public class ManagerController {
     }
 
     @ApiOperation(value = "Endorse/Sign student weekly task", notes = "")
-    @PutMapping(value = "/sign-week/{managerId}/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "sign-week/{managerId}/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> signWeeklyTask(@PathVariable("managerId") @Valid @Min(value = 1) Long managerId,
                                                               @PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
                                                               @RequestBody @Valid WeeklySignUpdateJSON updateJSON){

@@ -29,10 +29,10 @@ public class GlobalUserService {
      */
     public Optional<UserAuthDTO> emailExists(String email){
 
-        Query query = entityManager.createNativeQuery("SELECT ST.EMAIL, ST.USER_TYPE, ST.PASSWORD FROM STUDENTS ST WHERE ST.EMAIL = ? UNION " +
-                "SELECT ITF.EMAIL, ITF.USER_TYPE, ITF.PASSWORD FROM ITF_ADMINS ITF WHERE ITF.EMAIL = ? UNION " +
-                "SELECT C.EMAIL, C.USER_TYPE, C.PASSWORD FROM COORDINATORS C WHERE C.EMAIL = ? UNION " +
-                "SELECT M.EMAIL, M.USER_TYPE, M.PASSWORD FROM MANAGERS M WHERE M.EMAIL = ?");
+        Query query = entityManager.createNativeQuery("SELECT ST.EMAIL, ST.USER_TYPE, ST.PASSWORD, ST.ID FROM STUDENTS ST WHERE ST.EMAIL = ? UNION " +
+                "SELECT ITF.EMAIL, ITF.USER_TYPE, ITF.PASSWORD, ITF.ID FROM ITF_ADMINS ITF WHERE ITF.EMAIL = ? UNION " +
+                "SELECT C.EMAIL, C.USER_TYPE, C.PASSWORD, C.ID FROM COORDINATORS C WHERE C.EMAIL = ? UNION " +
+                "SELECT M.EMAIL, M.USER_TYPE, M.PASSWORD, M.ID FROM MANAGERS M WHERE M.EMAIL = ?");
         query.setParameter(1,email);
         query.setParameter(2,email);
         query.setParameter(3,email);
@@ -48,6 +48,7 @@ public class GlobalUserService {
                 .email(String.valueOf(user[0]))
                 .userType(String.valueOf(user[1]))
                 .hashedPassword(String.valueOf(user[2]))
+                .userId(String.valueOf(user[3]))
                 .build());
     }
 }
