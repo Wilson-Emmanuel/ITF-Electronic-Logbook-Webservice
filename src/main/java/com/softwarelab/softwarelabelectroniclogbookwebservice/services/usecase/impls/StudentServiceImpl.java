@@ -85,17 +85,17 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponse saveStudent(StudentCreationRequest creationRequest) {
-        if(userExistsByEmail(creationRequest.getUserRequest().getEmail()))
-            throw new ResourceAlreadyExistsException("Student email");
-
         if(globalUserService.emailExists(creationRequest.getUserRequest().getEmail()).isPresent())
-            throw new ResourceAlreadyExistsException("Student");
+            throw new ResourceAlreadyExistsException("Student Email");
 
         CoordinatorEntity coordinatorEntity = coordinatorRepository.findById(creationRequest.getCoordinatorId())
                 .orElseThrow(()->new ResourceNotFoundException("Coordinator"));
 
         ManagerEntity managerEntity = managerRepository.findById(creationRequest.getManagerId())
                 .orElseThrow(()->new ResourceNotFoundException("Manager"));
+
+        if(studentRepository.findByRegNoAndCoordinator_School(creationRequest.getRegNo(),coordinatorEntity.getSchool()).isPresent())
+            throw new ResourceAlreadyExistsException("Student Reg. No");
 
         StudentEntity studentEntity = StudentEntity.builder()
                 .regNo(creationRequest.getRegNo())
@@ -254,6 +254,10 @@ public class StudentServiceImpl implements StudentService {
         Sort sort = Sort.by("createdAt");
         List<LogBookEntity> logBookEntities = logBookRepository.findAllByStudent(entity,sort);
         Map<String, LogBookEntity> map = new HashMap<>();
+
+        LogBookEntity emptyLogBookEntity = LogBookEntity.builder()
+                .task("")
+                .build();
         for(LogBookEntity logBookEntity: logBookEntities){
             map.put(logBookEntity.getTaskDate().format(DateTimeFormatter.ISO_DATE), logBookEntity);
         }
@@ -261,33 +265,34 @@ public class StudentServiceImpl implements StudentService {
         //start date might not be Monday, in that, we need to get Monday
         LocalDate curDate = getStartDay(entity.getStartDate());
         LocalDate today = LocalDate.now();
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
 
         List<WeeklyTaskDetails> weeklyTasks = new ArrayList<>();
         List<DailyTaskDetails> dailyTasks = new ArrayList<>();
         DailyTaskDetails dailyTask = null;
         WeeklyTaskDetails weeklyTask = null;
-        while(curDate.isBefore(today) || curDate.isEqual(today)){
+        while(curDate.isBefore(tomorrow)){
 
-            String curDateStr = LocalDate.from(curDate).format(DateTimeFormatter.ISO_DATE);
-            boolean editable = (curDate.isAfter(entity.getStartDate()) || curDate.isEqual(entity.getStartDate()))
+            String curDateStr = curDate.format(DateTimeFormatter.ISO_DATE);
+            boolean editable = (curDate.isAfter(entity.getStartDate().minusDays(1)) )
                                     && curDate.getDayOfWeek().getValue() < 6;//saturday and sunday are not editable
 
             dailyTask = DailyTaskDetails.builder()
             .editable(editable)
-            .task(map.containsKey(curDateStr)?map.get(curDateStr).getTask():"")
+            .task(map.getOrDefault(curDateStr,emptyLogBookEntity).getTask())
             .date(curDateStr)
             .build();
             dailyTasks.add(dailyTask);
 
             if(curDate.getDayOfWeek().getValue() == 7 || curDate.isEqual(today)){//week end
-                boolean signed = signatureRepository.existsByStudentAndStartTaskDateAndEndTaskDate(entity,LocalDate.now().minusDays(6), curDate);
+                boolean signed = signatureRepository.existsByStudentAndStartTaskDateAndEndTaskDate(entity,getStartDay(curDate), curDate);
                 weeklyTask = WeeklyTaskDetails.builder()
-                        .weekNo(weeklyTasks.size()+1)
+                        .weekNo(weeklyTasks.size())
                         .dailyTasks(dailyTasks)
                         .signed(signed)
                         .build();
-                dailyTasks.clear();
                 weeklyTasks.add(weeklyTask);
+                dailyTasks = new ArrayList<>();
             }
             curDate = curDate.plusDays(1);
         }
@@ -330,6 +335,10 @@ public class StudentServiceImpl implements StudentService {
         if(logBookRepository.countAllByStudentAndTaskDateIsBetween(studentEntity,startDate,endDate) == 0)
             throw new ProcessViolationException("Student does not have any log this week");
 
+        LocalDate lastDay = startDate.plusDays(6);
+        if(lastDay.isAfter(endDate)){
+            throw new ProcessViolationException("Current week is not due for signing");
+        }
         SignatureEntity signatureEntity = SignatureEntity.builder()
                 .manager(managerEntity)
                 .student(studentEntity)

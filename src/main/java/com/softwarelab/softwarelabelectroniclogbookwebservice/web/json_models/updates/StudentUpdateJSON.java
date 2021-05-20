@@ -32,11 +32,11 @@ public class StudentUpdateJSON {
 
 
     @JsonProperty(value = "coordinator_id")
-   @Min(value = 0)
+   @Min(value = 1)
     private Long coordinatorId;
 
     @JsonProperty(value = "manager_id")
-    @Min(value = 0)
+    @Min(value = 1)
     private Long managerId;
 
      public StudentUpdateRequest getRequestModel(){

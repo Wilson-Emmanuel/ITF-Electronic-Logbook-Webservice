@@ -48,8 +48,6 @@ public class ManagerServiceImpl implements ManagerService{
 
     @Override
     public ManagerResponse saveManager(ManagerCreationRequest creationRequest) {
-        if(userExistsByEmail(creationRequest.getNewUserRequest().getEmail()))
-            throw new ResourceAlreadyExistsException("Manager");
 
         if(globalUserService.emailExists(creationRequest.getNewUserRequest().getEmail()).isPresent())
             throw new ResourceAlreadyExistsException("Manager");
@@ -170,7 +168,7 @@ public class ManagerServiceImpl implements ManagerService{
                 managerEntities.getTotalPages());
     }
     private Page<ManagerEntity> getManagers(ManagerDTO managerDTO, int page, int size){
-        Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page,size, Sort.by("companyName").ascending());
 
         Specification<ManagerEntity> specification = withActiveStatus(RecordStatusConstant.ACTIVE);
         if(StringUtils.isNotBlank(managerDTO.getEmail())){

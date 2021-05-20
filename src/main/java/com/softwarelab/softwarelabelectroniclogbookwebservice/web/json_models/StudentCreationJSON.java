@@ -61,12 +61,12 @@ public class StudentCreationJSON {
 
     @ApiModelProperty(notes = "Coordinator ID. Expected format: Long", required = true)
     @JsonProperty(value = "coordinator_id")
-   @Min(value = 0)
+   @Min(value = 1)
     private Long coordinatorId;
 
     @ApiModelProperty(notes = "Manager ID. Expected format: Long", required = true)
     @JsonProperty(value = "manager_id")
-    @Min(value = 0)
+    @Min(value = 1)
     private Long managerId;
 
     @JsonProperty(value = "start_date")
