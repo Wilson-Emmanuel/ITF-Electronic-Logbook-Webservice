@@ -137,11 +137,10 @@ public class CoordinatorServiceImpl implements CoordinatorService {
         SchoolEntity schoolEntity = schoolRepository.findByName(coordinatorCreationRequest.getSchoolName())
                 .orElseThrow(() -> new ResourceNotFoundException("School"));
 
-        if(coordinatorRepository.existsByEmail(coordinatorCreationRequest.getNewUser().getEmail()))
-            throw new ResourceAlreadyExistsException("Coordinator");
-
         if(globalUserService.emailExists(coordinatorCreationRequest.getNewUser().getEmail()).isPresent())
             throw new ResourceAlreadyExistsException("Coordinator");
+
+
 
         CoordinatorEntity coordinatorEntity = CoordinatorEntity.builder()
                 .departmentName(coordinatorCreationRequest.getDepartment())

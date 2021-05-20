@@ -93,8 +93,7 @@ public class ManagerController {
 
     @ApiOperation(value = "Search Managers ")
     @GetMapping(value = "search",  produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<APIResponseJSON<PagedData<ManagerResponse>>> searchManager( @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                                                              @RequestParam(value = "email", required = false) String email,
+    public ResponseEntity<APIResponseJSON<PagedData<ManagerResponse>>> searchManager(@RequestParam(value = "email", required = false) String email,
                                                                                               @RequestParam(value = "state_name", required = false) String stateName,
                                                                                               @RequestParam(value = "phone", required = false) String phone,
                                                                                               @RequestParam(value = "size", required = false, defaultValue = "50") int size,

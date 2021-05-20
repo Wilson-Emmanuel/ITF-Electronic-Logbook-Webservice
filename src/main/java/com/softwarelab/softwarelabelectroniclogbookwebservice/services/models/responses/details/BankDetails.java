@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @Builder
 public class BankDetails {
-    @JsonProperty(value =" account_name")
+    @JsonProperty(value ="account_name")
     private String accountName;
 
     @JsonProperty(value = "account_number")
