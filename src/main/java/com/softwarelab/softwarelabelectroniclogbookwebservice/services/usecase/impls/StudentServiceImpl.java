@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -57,9 +58,16 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public String updateCoordinatorRemark(String remark, Long studentId) {
+    public String updateCoordinatorRemark(String remark, Long studentId, String coordinatorEmail) {
         StudentEntity studentEntity = studentRepository.findById(studentId)
                 .orElseThrow(()-> new ResourceNotFoundException("Student"));
+
+        CoordinatorEntity coordinatorEntity = coordinatorRepository.findByEmail(coordinatorEmail)
+                .orElseThrow(()->new ResourceNotFoundException("Coordinator"));
+
+        if(coordinatorEntity.getId().longValue() != studentEntity.getCoordinator().getId().longValue())
+            throw new ProcessViolationException("Wrong remark update");
+
         studentEntity.setCoordinatorRemarks(remark);
         studentRepository.save(studentEntity);
         return remark;
@@ -154,7 +162,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public PagedData<StudentResponse> getStudents(StudentQueryRequest queryRequest, int page, int size) {
         ManagerEntity managerEntity = managerRepository.findByEmail(queryRequest.getManagerEmail()).orElse(null);
-        CoordinatorEntity coordinatorEntity = coordinatorRepository.findByEmail(queryRequest.getManagerEmail()).orElse(null);
+        CoordinatorEntity coordinatorEntity = coordinatorRepository.findByEmail(queryRequest.getCoordinatorEmail()).orElse(null);
         SchoolEntity schoolEntity = schoolRepository.findByName(queryRequest.getSchoolName()).orElse(null);
         StateEntity stateEntity = stateRepository.findByName(queryRequest.getStateName()).orElse(null);
 
@@ -178,9 +186,9 @@ public class StudentServiceImpl implements StudentService {
         StudentEntity studentEntity = studentRepository.findById(studentId)
                 .orElseThrow(()->new ResourceNotFoundException("Student"));
 
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC+1"));//Lagos Time
-        if(now.getHour() < 7)
-            throw  new ProcessViolationException("Logs cannot be entered before 7 AM");
+//        LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC+1"));//Lagos Time
+//        if(now.getHour() < 7 && LocalDate.now().isEqual(taskDate))
+//            throw  new ProcessViolationException("Logs cannot be entered before 7 AM except for previous tasks.");
 
         //LocalDate taskDate = LocalDate.now();
         LogBookEntity logEntry = logBookRepository.findByStudentAndTaskDate(studentEntity,taskDate).orElse(null);
@@ -335,9 +343,13 @@ public class StudentServiceImpl implements StudentService {
         if(logBookRepository.countAllByStudentAndTaskDateIsBetween(studentEntity,startDate,endDate) == 0)
             throw new ProcessViolationException("Student does not have any log this week");
 
-        LocalDate lastDay = startDate.plusDays(6);
-        if(lastDay.isAfter(endDate)){
-            throw new ProcessViolationException("Current week is not due for signing");
+        if(studentEntity.getManager().getId().longValue() != managerId.longValue()){
+            throw new ProcessViolationException("Unqualified signing");//a manager can only sign for his students
+        }
+
+        int signDay = endDate.getDayOfWeek().getValue();
+        if( signDay < 5 || (signDay == 5 && LocalTime.now().getHour() < 7)){
+            throw new ProcessViolationException("Current week is not due for signing. Due only from after 7 Am Friday");
         }
         SignatureEntity signatureEntity = SignatureEntity.builder()
                 .manager(managerEntity)
