@@ -10,13 +10,17 @@ import com.softwarelab.softwarelabelectroniclogbookwebservice.web.json_models.Co
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.json_models.updates.CoordinatorRemarkUpdateJSON;
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.json_models.updates.UpdatePassword;
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.json_models.updates.UserUpdateJSON;
+import com.softwarelab.softwarelabelectroniclogbookwebservice.web.security.handlers.AuthenticatedUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -81,13 +85,14 @@ public class CoordinatorController {
         return new ResponseEntity<>(apiResponseJSON, HttpStatus.OK);
     }
 
-    //@Secured("COORDINATOR")
+    @Secured("COORDINATOR")
     @ApiOperation(value = "Update Student remark", notes = "")
     @PutMapping(value = "update-remark/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<APIResponseJSON<String>> updateStudentRemark(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
+    public ResponseEntity<APIResponseJSON<String>> updateStudentRemark(@ApiIgnore @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                                                        @PathVariable("studentId") @Valid @Min(value = 1) Long studentId,
                                                                        @RequestBody @Valid CoordinatorRemarkUpdateJSON updateJSON){
 
-        studentService.updateCoordinatorRemark(updateJSON.getCoordinatorRemark(),studentId);
+        studentService.updateCoordinatorRemark(updateJSON.getCoordinatorRemark(),studentId,authenticatedUser.getEmail());
         APIResponseJSON<String> apiResponseJSON = new APIResponseJSON<>("Successfully processed");
         return new ResponseEntity<>(apiResponseJSON, HttpStatus.OK);
     }

@@ -16,7 +16,7 @@ import java.time.LocalDate;
  * on Mon, 10/05/2021.
  */
 public interface StudentService extends UserService<StudentEntity, StudentResponse, Long>  {
-    String updateCoordinatorRemark(String remark, Long studentId);
+    String updateCoordinatorRemark(String remark, Long studentId,String coordinatorEmail);
     boolean signLogBook(Long studentId);
     boolean payStudent(Long student);
     StudentResponse saveStudent(StudentCreationRequest creationRequest);
