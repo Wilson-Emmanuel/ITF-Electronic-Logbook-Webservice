@@ -57,7 +57,7 @@ public class ITFAdminController {
         return new ResponseEntity<>(apiResponseJSON, HttpStatus.OK);
     }
 
-    @Secured("ITF")
+    //@Secured("ITF")
     @ApiOperation(value = "Get an existing ITF Admin", notes = "")
     @GetMapping(value = "{adminId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<ITFAdminResponse>> fetchITFAdmin(@PathVariable("adminId") @Valid @Min(value = 1) Integer adminId){
@@ -78,7 +78,7 @@ public class ITFAdminController {
     }
 
     @ApiOperation(value = "Mark student as paid", notes = "")
-    @Secured("ITF")
+    //@Secured("ITF")
     @PutMapping(value = "pay-student/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> payStudent(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId){
 
@@ -88,7 +88,7 @@ public class ITFAdminController {
     }
 
     @ApiOperation(value = "Sign student logbook", notes = "")
-    @Secured("ITF")
+    //@Secured("ITF")
     @PutMapping(value = "sign-logbook/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> signStudentLogbook(@PathVariable("studentId") @Valid @Min(value = 1) Long studentId){
 
