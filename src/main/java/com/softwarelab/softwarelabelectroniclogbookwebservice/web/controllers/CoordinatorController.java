@@ -85,7 +85,7 @@ public class CoordinatorController {
         return new ResponseEntity<>(apiResponseJSON, HttpStatus.OK);
     }
 
-    @Secured("COORDINATOR")
+    //@Secured("COORDINATOR")
     @ApiOperation(value = "Update Student remark", notes = "")
     @PutMapping(value = "update-remark/{studentId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<APIResponseJSON<String>> updateStudentRemark(@ApiIgnore @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
