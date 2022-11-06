@@ -5,7 +5,6 @@ import com.softwarelab.softwarelabelectroniclogbookwebservice.services.usecase.L
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.properties.ApplicationProperty;
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.security.handlers.AuthenticatedUser;
 import com.softwarelab.softwarelabelectroniclogbookwebservice.web.security.handlers.KeyToken;
-import javafx.util.Pair;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -29,34 +28,35 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
     }
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+    protected void additionalAuthenticationChecks(UserDetails userDetails,
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
     }
 
     @Override
-    protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken authenticationToken) throws AuthenticationException {
+    protected UserDetails retrieveUser(String userName, UsernamePasswordAuthenticationToken authenticationToken)
+            throws AuthenticationException {
         KeyToken keyToken = (KeyToken) authenticationToken.getCredentials();
 
         String token = keyToken.getToken();
         String clientKey = keyToken.getKey();
 
-        if(!clientKey.equals(applicationProperty.getApiRestKey())){
+        if (!clientKey.equals(applicationProperty.getApiRestKey())) {
             throw new BadCredentialsException("Invalid API key.");
         }
         LoggedInUser loggedInUser = loginService.getUserDetailsByToken(token)
-                .orElseThrow(()->new UsernameNotFoundException("Invalid token"));
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid token"));
 
         long timeDiff = loggedInUser.getLoggedIntime().until(LocalDateTime.now(), ChronoUnit.MINUTES);
-        if(timeDiff > applicationProperty.getMaxTokenLifeInMinutes()){
+        if (timeDiff > applicationProperty.getMaxTokenLifeInMinutes()) {
             loginService.deleteLoginDetails(loggedInUser.getEmail());
             throw new UsernameNotFoundException("Session expired");
         }
 
-        AuthenticatedUser authenticatedUser =new  AuthenticatedUser();
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser();
         authenticatedUser.addAuthority(loggedInUser.getUserType().toString());
         authenticatedUser.setUserType(loggedInUser.getUserType());
         authenticatedUser.setEmail(loggedInUser.getEmail());
         return authenticatedUser;
     }
-
 
 }
