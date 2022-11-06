@@ -44,3 +44,10 @@ This project uses `swagger` dependencies to generate beautiful html based docume
 
 ## Authentication
 This project uses `bearer token` based security to authenticate most of the requests. After login, a token is returned and such token are expected in subsequent requests for authorization. Authenticated requests also expected a header called `x-client-request-key` with value of `kdnonoeno#@2lsn`. These functionalities can be changed in the `application.properties` file.
+
+## Admin Login Details
+
+```
+username: admin@itf.com
+password: admin1234
+```
